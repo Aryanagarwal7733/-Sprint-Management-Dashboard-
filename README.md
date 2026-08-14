@@ -1,155 +1,175 @@
-# SprintDesk — Production-grade Sprint Management Dashboard
+# ✨ SprintDesk
 
-SprintDesk is a single-page sprint management application built for software development teams to manage sprints, tasks, and velocity stats. This project features a clean React & TypeScript architecture, custom Tailwind CSS styling with glassmorphism aesthetics, drag-and-drop mechanics, reactive analytics charts, and a real-time notification polling manager.
+A modern, beautifully-designed sprint management dashboard for development teams. Drag and drop tasks between columns, track sprint velocity in real-time, and collaborate seamlessly—all in a slick, glassmorphism-styled interface.
 
-Live Demo: (Provide deployment URL here)
-GitHub Repository: (Provide GitHub repo link here)
-
----
-
-## 🚀 Features & Modules
-
-### 🔒 1. Authentication Flow
-- **Interactive Login**: Standard credentials fields with client-side form validation.
-- **Silent Token Refresh Interceptor**: Standard axios client appended with request and response interceptors. If a request returns a `401 Unauthorized`, it holds the requests in a queue, calls the refresh token endpoint (`https://dummyjson.com/auth/refresh`), updates the store, and retries the original requests seamlessly.
-- **Session Persistence**: Verifies and maintains sessions on boot using refresh tokens.
-- **Remember Me Functionality**: Option for a 30-day session persistence by calculating expiry times. Includes demo accounts click-to-autofill buttons.
-
-### 📋 2. Interactive Kanban Sprint Board
-- **4 Sprint Columns**: Backlog, In Progress, Review, and Done.
-- **@dnd-kit Drag-and-Drop**: Supports column and card shifts with an animated `DragOverlay` implementing scale/tilt micro-animations.
-- **Toolbar Filters**: Live search input, priority filters, and assignee filters.
-- **Settings Editor Drawer**: Detailed task drawer sliding from the right to edit parameters (description, assignee, dates) and add comments.
-- **Undo History Stack**: Multi-step action history allows reverting task movements, deletions, or creations.
-
-### 📊 3. Analytics & Visualisation
-- Derived dynamically from active store data:
-  - **Sprint Velocity**: Completed vs. total tasks per sprint group.
-  - **Task Distribution**: Column category density represented on a donut chart.
-  - **Priority Breakdown**: Stacked bar charts depicting priorities across columns.
-  - **Completion Trend**: Line charts tracing cumulative task completions over time.
-
-### 🎨 4. Custom UI Component Library
-Built entirely from scratch using Tailwind CSS (no external component frameworks like Radix, MUI, or Shadcn):
-- `Button`: Multiple variants and loading states.
-- `Input` & `Select`: Uniform inputs with labels, icon prefixes, and validation error messages.
-- `Modal`: React Portals overlay with focus locks and escape-key listeners.
-- `Toast`: Dynamic snackbars (success, error, warning, info) with auto-dismiss timers.
-- `DataTable`: Generic sortable, searchable, paginated table widget.
-- `Skeleton`: Custom pulse cards.
-
-### 🔔 5. Simulated Real-Time Notifications
-- **Background Polling Service**: Queries `https://jsonplaceholder.typicode.com/posts?_limit=5` every 10 seconds. New post IDs are mapped into notification badges.
-- **Page Visibility Hooks**: Toggles polling intervals off when browser tab goes background and restarts on tab focus.
-- **Toasts**: Shows alert warnings for new notifications if the dropdown is closed.
+**[Live Demo](#)** • **[GitHub](https://github.com/Aryanagarwal7733/-Sprint-Management-Dashboard-)** • **[Report Issues](#)**
 
 ---
 
-## 🛠️ Tech Stack & Requirements
+## 🎯 What You Get
 
-| Area | Choice |
-|---|---|
-| **Framework** | React 18.3 |
-| **Language** | TypeScript (Strict Mode) |
-| **Build Tool** | Vite |
-| **Data Fetching** | Axios + TanStack Query v5 |
-| **Global State** | Zustand |
-| **Styling** | Tailwind CSS v3 |
-| **Routing** | React Router v6 |
-| **Charts** | Recharts |
-| **Drag & Drop** | @dnd-kit/core |
-| **Testing** | Vitest + React Testing Library + JSDom |
+### 🔐 Smart Authentication
+Sign up with your email or log in to an existing account. Your session stays active for 30 days, and we automatically refresh your token in the background so you never get logged out unexpectedly. We've included a demo admin account so you can test drive the full experience:
+
+- **Email**: `aryanagarwal610@gmail.com`
+- **Password**: `7teSy0@1`
+
+### 📌 Kanban Board (The Heart of SprintDesk)
+Organize your sprint work across four columns: **Backlog** → **In Progress** → **Review** → **Done**. 
+
+- **Drag & drop** tasks between columns with smooth animations
+- **Filter** by assignee, priority, or search by task name
+- **Fine-grained permissions**: Admins can edit anything, while team members can only modify their own tasks
+- **Undo history**: Made a mistake? Revert your last few actions with one click
+- The board comes pre-loaded with 30 sample developer tasks to get you started
+
+### 📊 Real-Time Analytics Dashboard
+See your sprint health at a glance with interactive charts showing:
+- How many tasks you've completed vs. your total workload
+- Task distribution across board columns
+- Priority breakdown across your sprint
+- Completion trends over time (who's crushing it? 📈)
+
+### 🎨 Beautiful, Hand-Crafted UI
+Every button, input, modal, and notification was built from scratch using Tailwind CSS. No bloated component libraries—just clean, performant, and fully customizable UI that works beautifully on any device.
+
+### 🔔 Notifications
+Stay in the loop with background notifications that poll for updates every 10 seconds. The system intelligently pauses notifications when you switch tabs and resumes when you come back.
 
 ---
 
-## 🏗️ System Architecture
+## 🛠️ Built With
 
-SprintDesk is designed with a feature-sliced directory structure separating API clients, state stores, custom layouts, and feature modules.
+Modern, battle-tested technologies:
+
+| What | Why |
+|------|-----|
+| **React 18** | Fast, component-based UI architecture |
+| **TypeScript** | Catch bugs at compile-time, not runtime |
+| **Vite** | Lightning-fast build and dev server |
+| **Tailwind CSS** | Utility-first styling for rapid UI development |
+| **Zustand** | Lightweight, simple state management |
+| **Axios + React Query** | Bulletproof data fetching and caching |
+| **@dnd-kit** | Smooth, performant drag-and-drop |
+| **Recharts** | Beautiful, responsive data visualizations |
+| **Vitest** | Fast, modern unit testing |
+
+---
+
+## 📁 Project Structure
+
+The codebase is organized using a feature-sliced approach, making it easy to find related code:
 
 ```
 src/
-├── api/                  # Axios clients & DummyJSON/JSONPlaceholder endpoints
-├── components/           # Custom Reusable Component Library (design system)
-│   ├── ui/               # Button, Input, Select, DataTable, Modal, Toast, Skeleton
-│   └── layout/           # Sidebar, Navbar, AppLayout, PageContainer
-├── features/             # Feature-based logic
-│   ├── auth/             # Login Page, Guards
-│   ├── board/            # Kanban Board columns, cards, drawers, modals
-│   ├── analytics/        # Recharts visualisations
-│   └── notifications/    # Bell, Poll trigger hooks
-├── hooks/                # Global utilities (useToast)
-├── store/                # Zustand global stores (auth, board, notification, theme)
-├── types/                # Strict TypeScript typings
-├── utils/                # Simulated storage utilities
-├── App.tsx               # Route declarations & Query providers
-├── index.css             # Tailwind baseline & Custom scrollbars
-└── main.tsx              # Mounting entrypoint
+├── api/                  # API clients (Axios instances, interceptors)
+├── components/           # Reusable UI components
+│   ├── ui/               # Base components (Button, Input, Modal, etc.)
+│   └── layout/           # Page layouts (Navbar, Sidebar, etc.)
+├── features/             # Feature modules
+│   ├── auth/             # Login & authentication
+│   ├── board/            # Kanban board & tasks
+│   ├── analytics/        # Charts & analytics
+│   └── notifications/    # Notification system
+├── hooks/                # Custom React hooks (useToast, etc.)
+├── store/                # Global state (Zustand stores)
+├── types/                # TypeScript type definitions
+├── utils/                # Helper utilities
+├── App.tsx               # Route setup
+└── main.tsx              # App entry point
 ```
 
-### Data Flow
-
-```mermaid
-graph TD
-    User([User Actions]) --> UI[React Components]
-    UI --> Stores[Zustand Stores]
-    Stores --> LocalStorage[(LocalStorage)]
-    UI --> APIClient[Axios API Clients]
-    APIClient --> DummyJSON[DummyJSON Auth Endpoint]
-    APIClient --> JSONPlaceholder[JSONPlaceholder Posts/Todos]
-```
+**How data flows through the app:**
+User interacts with Components → Updates Zustand Store → Data persists to Local Storage → Analytics & UI re-render
 
 ---
 
-## 🧪 Testing Coverage
+## 🚀 Quick Start
 
-The project includes unit test coverage for the core state models and interceptors:
-1. `useToast` Hook: Checks toast stack triggers, property assignments, and dismissals.
-2. Zustand Board Store: Verifies task additions, order shifts inside `moveTask`, deletions, and history check-points.
-3. Auth Interceptor: Verifies Bearer header injections, silent refresh calls to `/auth/refresh`, state updates, request queues, and fallback logouts on failure.
+Get up and running in 3 minutes:
 
-All tests pass successfully with exit code 0:
+### 1. Clone and install
 ```bash
-npm run test
-```
-
----
-
-## ⚙️ Installation & Setup
-
-Follow these steps to run SprintDesk locally:
-
-### 1. Clone the repository
-```bash
-git clone https://github.com/yourusername/sprintdesk.git
-cd sprintdesk
-```
-
-### 2. Install dependencies
-```bash
+git clone https://github.com/Aryanagarwal7733/-Sprint-Management-Dashboard-.git
+cd -Sprint-Management-Dashboard-
 npm install
 ```
 
-### 3. Start development server
+### 2. Start developing
 ```bash
 npm run dev
 ```
-The server will boot, typically accessible at `http://localhost:5173`.
+Open [http://localhost:5173](http://localhost:5173) in your browser.
 
-### 4. Build project
-To bundle for production deployment:
+### 3. Build for production
 ```bash
 npm run build
 ```
-The compiled files are created inside the `/dist` directory.
 
-### 5. Running tests
+### 4. Run tests
 ```bash
 npm run test
 ```
 
 ---
 
-## 📝 Technical Decisions & Architectural Rationales
-- **In-Memory Access Tokens**: For security best practices, the JWT `accessToken` is stored strictly in React memory. The `refreshToken` is handled via simulated local storage and automatically refreshed before expiration, protecting against XSS exploits.
-- **Custom UI Components**: Built from raw Tailwind CSS utilities and HTML elements to avoid bundle bloating and ensure full control over layout semantics, responsive scaling, and accessibility parameters.
-- **dnd-kit Choice**: Chosen for its lightweight structure, support for multiple sensors (pointers, touch, keyboard), and ease of integration compared to bulkier, less maintained options like `react-beautiful-dnd`.
+## 🧠 Design Decisions
+
+Here's why I built things this way:
+
+**Local First Architecture** - No backend required means you can use this offline and never worry about API downtime. All user data, tasks, and history lives in your browser's local storage.
+
+**Custom UI Library** - I built every component from scratch with Tailwind instead of using a heavy component library. The result? A lighter bundle, faster load times, and complete control over how everything looks and feels.
+
+**dnd-kit for Drag-and-Drop** - Among the options out there, dnd-kit is the leanest and most maintainable. It supports touch, keyboard navigation, and has excellent TypeScript support.
+
+**Zustand for State** - I could've used Redux, but Zustand is simpler, requires less boilerplate, and scales beautifully from a small app to a large one.
+
+---
+
+## ✅ Testing
+
+Tests are built in and run fast. The suite covers:
+- **Hooks**: Toast notifications, state changes
+- **State Management**: Task operations, history, permissions
+- **Auth**: Token handling and session persistence
+
+Run them with `npm run test`. Everything passes. ✨
+
+---
+
+## 📝 What's Inside
+
+Each feature is self-contained and easy to understand:
+
+- **Auth** - Email login, registration, token refresh
+- **Board** - Drag-drop tasks, filters, permissions, undo history
+- **Analytics** - Interactive charts showing sprint metrics
+- **Notifications** - Background polling with smart tab detection
+- **Components** - Reusable UI building blocks
+
+---
+
+## 🤝 Contributing
+
+Found a bug or want to improve something? Here's how:
+
+1. Fork the repo
+2. Create a feature branch (`git checkout -b feature/amazing-thing`)
+3. Make your changes
+4. Push to your fork
+5. Open a Pull Request
+
+---
+
+## 📄 License
+
+MIT – Feel free to use this however you'd like.
+
+---
+
+## 👋 Questions?
+
+Have questions about the project? Check the code comments, browse the feature folders, or reach out. The codebase is well-organized and should be easy to navigate.
+
+Happy task management! 🚀

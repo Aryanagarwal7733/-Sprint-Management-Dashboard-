@@ -5,6 +5,7 @@ import { useAuthStore } from '../../store/authStore';
 import { useToast } from '../../hooks/useToast';
 import { Button } from '../../components/ui/Button';
 import { Input } from '../../components/ui/Input';
+import { Modal } from '../../components/ui/Modal';
 
 export const LoginPage: React.FC = () => {
   const navigate = useNavigate();
@@ -13,6 +14,7 @@ export const LoginPage: React.FC = () => {
   const { toast } = useToast();
 
   const [isRegister, setIsRegister] = useState(false);
+  const [showRegisterPopup, setShowRegisterPopup] = useState(false);
 
   // Sign In / Common States
   const [username, setUsername] = useState('');
@@ -167,11 +169,15 @@ export const LoginPage: React.FC = () => {
         navigate(from, { replace: true });
       } catch (err: any) {
         console.error(err);
-        toast({
-          title: 'Authentication Failed',
-          description: err.response?.data?.message || 'Invalid email or password.',
-          variant: 'destructive',
-        });
+        if (err.message === 'Invalid username or password') {
+          setShowRegisterPopup(true);
+        } else {
+          toast({
+            title: 'Authentication Failed',
+            description: err.message || 'Invalid email or password.',
+            variant: 'destructive',
+          });
+        }
       } finally {
         setIsLoading(false);
       }
@@ -341,6 +347,32 @@ export const LoginPage: React.FC = () => {
           </button>
         </div>
       </div>
+
+      <Modal
+        isOpen={showRegisterPopup}
+        onClose={() => setShowRegisterPopup(false)}
+        title="Account Not Found"
+      >
+        <div className="flex flex-col gap-4 text-center py-2">
+          <p className="text-sm text-slate-600 dark:text-slate-400 leading-relaxed">
+            The email address you entered is not registered. Please create an account first to log in.
+          </p>
+          <div className="flex gap-3 justify-center mt-3">
+            <Button variant="outline" onClick={() => setShowRegisterPopup(false)}>
+              Cancel
+            </Button>
+            <Button
+              variant="primary"
+              onClick={() => {
+                setShowRegisterPopup(false);
+                setIsRegister(true);
+              }}
+            >
+              Register Now
+            </Button>
+          </div>
+        </div>
+      </Modal>
     </div>
   );
 };

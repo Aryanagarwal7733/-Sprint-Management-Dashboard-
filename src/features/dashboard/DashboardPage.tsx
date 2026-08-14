@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { FolderKanban, TrendingUp } from 'lucide-react';
 import { useAuthStore } from '../../store/authStore';
@@ -11,19 +11,27 @@ export const DashboardPage: React.FC = () => {
   const { user } = useAuthStore();
   const { tasks } = useBoardStore();
 
-  const userTasks = useMemo(() => {
-    if (!user) return [];
-    return tasks.filter((t) => t.assignee.name.toLowerCase().includes(user.firstName.toLowerCase()));
+  const [viewMode, setViewMode] = useState<'my' | 'all'>('all');
+
+  const myTasksCount = useMemo(() => {
+    if (!user) return 0;
+    return tasks.filter((t) => t.assignee.name.toLowerCase().includes(user.firstName.toLowerCase())).length;
   }, [tasks, user]);
 
+  const displayedTasks = useMemo(() => {
+    if (viewMode === 'all') return tasks;
+    if (!user) return [];
+    return tasks.filter((t) => t.assignee.name.toLowerCase().includes(user.firstName.toLowerCase()));
+  }, [tasks, user, viewMode]);
+
   const stats = useMemo(() => {
-    const total = userTasks.length;
-    const completed = userTasks.filter((t) => t.status === 'done').length;
-    const inProgress = userTasks.filter((t) => t.status === 'in-progress').length;
+    const total = displayedTasks.length;
+    const completed = displayedTasks.filter((t) => t.status === 'done').length;
+    const inProgress = displayedTasks.filter((t) => t.status === 'in-progress').length;
     const pending = total - completed;
 
     return { total, completed, inProgress, pending };
-  }, [userTasks]);
+  }, [displayedTasks]);
 
   const priorityColors = {
     low: 'bg-blue-50 text-blue-700 border-blue-200 dark:bg-blue-950/20 dark:text-blue-400 dark:border-blue-800/30',
@@ -89,7 +97,7 @@ export const DashboardPage: React.FC = () => {
   ];
 
   return (
-    <div className="flex flex-col gap-6 text-left">
+    <div className="flex flex-col gap-6 text-left animate-fade-in">
       {/* Welcome Banner */}
       {user && (
         <div className="glass-panel p-6 rounded-2xl flex flex-col md:flex-row md:items-center justify-between gap-4 border border-slate-200/50 dark:border-slate-800/50">
@@ -104,7 +112,9 @@ export const DashboardPage: React.FC = () => {
                 Welcome back, {user.firstName} {user.lastName}!
               </h2>
               <p className="text-xs text-slate-500 mt-1">
-                Here's a breakdown of your current tasks for Sprint 4.
+                {viewMode === 'all'
+                  ? "Here's a breakdown of the team's progress for Sprint 4."
+                  : "Here's a breakdown of your personal tasks for Sprint 4."}
               </p>
             </div>
           </div>
@@ -127,22 +137,56 @@ export const DashboardPage: React.FC = () => {
         </div>
       )}
 
+      {/* Segmented View Mode Toggle */}
+      <div className="flex justify-end -mb-2">
+        <div className="bg-slate-100 dark:bg-slate-800/80 p-0.5 rounded-xl flex gap-1 border border-slate-200/20 dark:border-slate-800/30">
+          <button
+            onClick={() => setViewMode('all')}
+            className={`px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-all ${
+              viewMode === 'all'
+                ? 'bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 shadow-sm'
+                : 'text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200'
+            }`}
+          >
+            Team View ({tasks.length})
+          </button>
+          <button
+            onClick={() => setViewMode('my')}
+            className={`px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-all ${
+              viewMode === 'my'
+                ? 'bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 shadow-sm'
+                : 'text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200'
+            }`}
+          >
+            My Tasks ({myTasksCount})
+          </button>
+        </div>
+      </div>
+
       {/* Metrics Row */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         <div className="glass-panel p-5 rounded-2xl">
-          <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">My Tasks</span>
+          <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">
+            {viewMode === 'all' ? 'Total Sprint Tasks' : 'My Tasks'}
+          </span>
           <p className="text-3xl font-extrabold text-slate-900 dark:text-slate-50 mt-1">{stats.total}</p>
         </div>
         <div className="glass-panel p-5 rounded-2xl">
-          <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">My Completed</span>
+          <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">
+            {viewMode === 'all' ? 'Completed Tasks' : 'My Completed'}
+          </span>
           <p className="text-3xl font-extrabold text-emerald-500 mt-1">{stats.completed}</p>
         </div>
         <div className="glass-panel p-5 rounded-2xl">
-          <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">My In Progress</span>
+          <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">
+            {viewMode === 'all' ? 'In Progress Tasks' : 'My In Progress'}
+          </span>
           <p className="text-3xl font-extrabold text-blue-500 mt-1">{stats.inProgress}</p>
         </div>
         <div className="glass-panel p-5 rounded-2xl">
-          <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">My Remaining</span>
+          <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">
+            {viewMode === 'all' ? 'Remaining Tasks' : 'My Remaining'}
+          </span>
           <p className="text-3xl font-extrabold text-amber-500 mt-1">{stats.pending}</p>
         </div>
       </div>
@@ -150,13 +194,19 @@ export const DashboardPage: React.FC = () => {
       {/* Assigned Tasks Data Table */}
       <div className="glass-panel p-6 rounded-2xl flex flex-col gap-4">
         <div>
-          <h3 className="font-bold text-sm text-slate-800 dark:text-slate-200">Tasks Assigned to Me</h3>
-          <p className="text-xs text-slate-400">Search and sort tasks currently registered in your queue</p>
+          <h3 className="font-bold text-sm text-slate-800 dark:text-slate-200">
+            {viewMode === 'all' ? 'All Sprint Tasks' : 'Tasks Assigned to Me'}
+          </h3>
+          <p className="text-xs text-slate-400">
+            {viewMode === 'all'
+              ? 'Search and sort all tasks registered on the sprint board'
+              : 'Search and sort tasks currently registered in your queue'}
+          </p>
         </div>
         <DataTable
           columns={tableColumns}
-          data={userTasks}
-          searchPlaceholder="Search my tasks..."
+          data={displayedTasks}
+          searchPlaceholder={viewMode === 'all' ? 'Search all tasks...' : 'Search my tasks...'}
           searchKey="title"
           pageSize={5}
         />
