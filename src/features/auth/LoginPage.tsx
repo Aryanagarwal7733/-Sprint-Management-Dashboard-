@@ -160,13 +160,14 @@ export const LoginPage: React.FC = () => {
       }
     } else {
       try {
-        await login(email.trim(), password, rememberMe);
+        const loggedInUser = await login(email.trim(), password, rememberMe);
         toast({
           title: 'Authentication Successful',
           description: 'Welcome back to SprintDesk!',
           variant: 'success',
         });
-        navigate(from, { replace: true });
+        const targetPath = (from.includes('/users') && loggedInUser.role !== 'admin') ? '/dashboard' : from;
+        navigate(targetPath, { replace: true });
       } catch (err: any) {
         console.error(err);
         if (err.message === 'Invalid username or password') {
