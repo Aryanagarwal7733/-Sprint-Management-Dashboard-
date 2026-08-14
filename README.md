@@ -9,7 +9,7 @@ A modern, beautifully-designed sprint management dashboard for development teams
 ## 🎯 What You Get
 
 ### 🔐 Smart Authentication
-Sign up with your email or log in to an existing account. Your session stays active for 30 days, and we automatically refresh your token in the background so you never get logged out unexpectedly. We've included a demo admin account so you can test drive the full experience:
+Sign up with your email or log in to an existing account. **Multiple users can register, but they must create an account first before they can log in. Newly registered users (like Vini Chaudhary) are configured as standard User roles in the system.** Your session stays active for 30 days, and we automatically refresh your token in the background so you never get logged out unexpectedly. We've included a demo admin account so you can test drive the full experience:
 
 - **Email**: `aryanagarwal610@gmail.com`
 - **Password**: `7teSy0@1`
@@ -19,7 +19,7 @@ Organize your sprint work across four columns: **Backlog** → **In Progress** �
 
 - **Drag & drop** tasks between columns with smooth animations
 - **Filter** by assignee, priority, or search by task name
-- **Fine-grained permissions**: Admins can edit anything, while team members can only modify their own tasks
+- **Fine-grained permissions**: Admins have full access and can manage user accounts (including deleting employee profiles when an employee leaves the company), while standard team members can only edit their own tasks.
 - **Undo history**: Made a mistake? Revert your last few actions with one click
 - The board comes pre-loaded with 30 sample developer tasks to get you started
 

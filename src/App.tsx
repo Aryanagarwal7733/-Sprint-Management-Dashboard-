@@ -12,6 +12,7 @@ const LoginPage = lazy(() => import('./features/auth/LoginPage').then(m => ({ de
 const DashboardPage = lazy(() => import('./features/dashboard/DashboardPage').then(m => ({ default: m.DashboardPage })));
 const KanbanBoard = lazy(() => import('./features/board/KanbanBoard').then(m => ({ default: m.KanbanBoard })));
 const AnalyticsPage = lazy(() => import('./features/analytics/AnalyticsPage').then(m => ({ default: m.AnalyticsPage })));
+const UsersPage = lazy(() => import('./features/users/UsersPage').then(m => ({ default: m.UsersPage })));
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -81,6 +82,7 @@ export const App: React.FC = () => {
               <Route path="dashboard" element={<DashboardPage />} />
               <Route path="board" element={<KanbanBoard />} />
               <Route path="analytics" element={<AnalyticsPage />} />
+              <Route path="users" element={<UsersPage />} />
             </Route>
 
             {/* Catch All Redirect */}

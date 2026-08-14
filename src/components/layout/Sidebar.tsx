@@ -1,6 +1,6 @@
 import React from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
-import { LayoutDashboard, KanbanSquare, BarChart3, LogOut, Moon, Sun, ChevronRight } from 'lucide-react';
+import { LayoutDashboard, KanbanSquare, BarChart3, LogOut, Moon, Sun, ChevronRight, Users } from 'lucide-react';
 import { useAuthStore } from '../../store/authStore';
 import { useThemeStore } from '../../store/themeStore';
 import { useToast } from '../../hooks/useToast';
@@ -25,6 +25,7 @@ export const Sidebar: React.FC = () => {
     { to: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
     { to: '/board', label: 'Kanban Board', icon: KanbanSquare },
     { to: '/analytics', label: 'Analytics', icon: BarChart3 },
+    ...(user?.role === 'admin' ? [{ to: '/users', label: 'Manage Users', icon: Users }] : []),
   ];
 
   return (
